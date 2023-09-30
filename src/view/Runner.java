@@ -30,6 +30,7 @@ public class Runner {
                 runner.addProduct();
                 break;
             case 2:
+                runner.addBill();
 
             case 3:
 
