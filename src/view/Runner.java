@@ -9,22 +9,23 @@ public class Runner {
     Scanner sc = new Scanner(System.in);
     private static Presenter presenter = new Presenter();
     static Runner runner = new Runner();
+
     public static void main(String[] args) {
         runner.menu();
     }
 
-    public void menu(){
+    public void menu() {
         System.out.println("************* MENU *********** \n" +
                 "1. Manage products \n" +
-                "2. Add invoice\n" +
-                "3. Add Details invoice\n" +
+                "2. Add bill \n" +
+                "3. Add details bill\n" +
                 "4. Update stock products\n" +
-                "5. Check details invoice\n" +
+                "5. Check details bill\n" +
                 "6. Go out");
 
         int option = sc.nextInt();
 
-        switch (option){
+        switch (option) {
             case 1:
                 runner.addProduct();
                 break;
@@ -43,6 +44,7 @@ public class Runner {
         }
 
     }
+
     private void addProduct() {
 
         int add;
@@ -78,18 +80,19 @@ public class Runner {
             System.out.println("Do you want to add another object? Enter 1. No, Enter 2. Yes");
             add = sc.nextInt();
 
-
         } while (add == 2);
 
-//        System.out.println(product.toString());
-//        System.out.println("You want to add the product for sale, type 1. Yes or 2.Not");
-//        int addProduct = sc.nextInt();
-//        if (addProduct == 1) {
-//            System.out.println("Enter the amount you want to buy: ");
-//            int cant1 = sc.nextInt();
-//            try {
-//                presenter.addSale(product.getName(), product.getValue(), product.getStock(), product.isIva(), product.getTypeProduct(), cant1);
-//            } catch (Exception e) {
-//                System.err.println("there is not enough quantity");
-            }
+        // System.out.println(product.toString());
+        // System.out.println("You want to add the product for sale, type 1. Yes or
+        // 2.Not");
+        // int addProduct = sc.nextInt();
+        // if (addProduct == 1) {
+        // System.out.println("Enter the amount you want to buy: ");
+        // int cant1 = sc.nextInt();
+        // try {
+        // presenter.addSale(product.getName(), product.getValue(), product.getStock(),
+        // product.isIva(), product.getTypeProduct(), cant1);
+        // } catch (Exception e) {
+        // System.err.println("there is not enough quantity");
+    }
 }

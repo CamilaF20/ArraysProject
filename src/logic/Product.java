@@ -11,10 +11,11 @@ public class Product {
     private LocalDate dateExpired;
     private ETypeProduct typeProduct;
 
-    public Product(){
-
+    public Product() {
     }
-    public Product(String idProduct, String description, double value, int stock,LocalDate dateExpired, ETypeProduct typeProduct) {
+
+    public Product(String idProduct, String description, double value, int stock, LocalDate dateExpired,
+            ETypeProduct typeProduct) {
         this.idProduct = idProduct;
         this.description = description;
         this.value = value;
@@ -71,30 +72,54 @@ public class Product {
         this.dateExpired = dateExpired;
     }
 
-    public ETypeProduct geteTypeProduct() {
+    public ETypeProduct getTypeProduct() {
         return typeProduct;
     }
 
-    public void seteTypeProduct(ETypeProduct eTypeProduct) {
+    public void setTypeProduct(ETypeProduct eTypeProduct) {
         this.typeProduct = eTypeProduct;
     }
 
-    public boolean isExpired(){
+    public boolean isExpired() {
+
+        LocalDate actualDate = LocalDate.now();
+        int actualYear = actualDate.getYear();
+        int actualMonth = actualDate.getMonthValue();
+        int actualDay = actualDate.getDayOfMonth();
+
+        int expirationYear = dateExpired.getYear();
+        int expirationMonth = dateExpired.getMonthValue();
+        int expirationDay = dateExpired.getDayOfMonth();
+
+        if (expirationYear < actualYear) {
+            return true;
+        } else if (expirationYear == actualYear) {
+            if (expirationMonth < actualMonth) {
+                return true;
+            } else if (expirationMonth == actualMonth && expirationDay < actualDay) {
+                return true;
+            }
+        }
+
         return false;
     }
-    public double calcIva(){
-        return 0;
+
+    public double calcIva() {
+
+        double iva = 0.19;
+        double valueIva = this.value * iva;
+        return valueIva;
     }
 
     @Override
     public String toString() {
-        return "Product{" +
-                "idProduct='" + idProduct + '\'' +
-                ", description='" + description + '\'' +
-                ", value=" + value +
-                ", stock=" + stock +
-                ", STOCK_MIN=" + STOCK_MIN +
-                ", dateExpired=" + dateExpired +
+        return "Product{ " +
+                "Id Product= " + idProduct + '\'' +
+                ", description= " + description + '\'' +
+                ", value= " + value +
+                ", stock= " + stock +
+                ", STOCK_MIN= " + STOCK_MIN +
+                ", dateExpired= " + dateExpired +
                 ", typeProduct= " + typeProduct +
                 '}';
     }
