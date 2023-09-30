@@ -4,5 +4,5 @@ public enum ETypeProduct {
     VIVERES,
     LICORES,
     MEDDICINAS,
-    ASEO,
+    ASEO
 }
