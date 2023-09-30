@@ -55,6 +55,29 @@ public class HandlingService {
      */
     //Delete
     public Product delete(String Id) {
+        if (findId(Id) != null) {
+            int deletePosition = 0;
+            for (int i = 0; i < products.length; i++) {
+                if (products[i].getIdProduct().equals(Id)) {
+                    deletePosition = i;
+                }
+            }
+            Product deleteProduct = products[deletePosition];
+            this.products[deletePosition] = null;
+
+            Product productsAux[] = new Product[products.length - 1];
+            int positionAux = 0;
+
+            for (int i = 0 ; i < products.length ; i++){
+                if (products[i] != null){
+                    productsAux[positionAux] = products[i];
+                    positionAux++;
+                }
+            }
+            products = productsAux;
+            position = position - 1;
+            return deleteProduct;
+        }
         return null;
     }
 

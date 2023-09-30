@@ -25,7 +25,7 @@ public class Presenter {
             array[2] = Double.valueOf(product.getValue()).toString();
             array[3] = Integer.valueOf(product.getStock()).toString();
             array[4] = (product.getDateExpired()).toString();
-            array[5] = (product.geteTypeProduct()).toString();
+            array[5] = (product.getTypeProduct()).toString();
 
             return array;
 
@@ -48,6 +48,27 @@ public class Presenter {
         return handlingService.addProduct(product);
     }
 
+    public String[] delete (String Id) {
+
+        Product product = handlingService.delete(Id);
+
+        if (product != null) {
+
+            String[] array = new String[6];
+
+            array[0] = product.getIdProduct();
+            array[1] = product.getDescription();
+            array[2] = Double.valueOf(product.getValue()).toString();
+            array[3] = Integer.valueOf(product.getStock()).toString();
+            array[4] = (product.getDateExpired()).toString();
+            array[5] = (product.getTypeProduct()).toString();
+
+            return array;
+
+        } else {
+            return null;
+        }
+    }
     public int manageProducts(){
         return 0;
     }
