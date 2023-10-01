@@ -5,7 +5,19 @@ import java.util.ArrayList;
 
 public class Bill {
 
-    public String getNumber() {
+  
+    private ArrayList<Detail> details;
+    private String number;
+    private LocalDate dateBill;
+
+    public Bill(String number, LocalDate dateBill) {
+        this.number = number;
+        this.dateBill = dateBill;
+        this.details = new ArrayList<Detail>();
+
+    }
+    
+      public String getNumber() {
         return number;
     }
 
@@ -21,16 +33,6 @@ public class Bill {
         this.dateBill = dateBill;
     }
 
-    private ArrayList<Detail> details;
-    private String number;
-    private LocalDate dateBill;
-
-    public Bill(String number, LocalDate dateBill) {
-        this.number = number;
-        this.dateBill = dateBill;
-        this.details = new ArrayList<Detail>();
-        
-    }
 
     public double calcTotal() {
         double totalValue = 0;
