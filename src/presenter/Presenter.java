@@ -1,8 +1,6 @@
 package presenter;
 
-import logic.ETypeProduct;
-import logic.HandlingService;
-import logic.Product;
+import logic.*;
 
 import java.time.LocalDate;
 
@@ -15,7 +13,7 @@ public class Presenter {
 
     public String[] findId(String number){
 
-        Product product = handlingService.findId(number);
+        Product product = handlingService.findProductById(number);
 
         if (product != null){
             String [] array = new String[6];
@@ -50,7 +48,7 @@ public class Presenter {
 
     public String[] delete (String Id) {
 
-        Product product = handlingService.delete(Id);
+        Product product = handlingService.deleteProduct(Id);
 
         if (product != null) {
 
@@ -80,7 +78,7 @@ public class Presenter {
 
         Product product = new Product(Id,description,value,stock,dateExpired,typeProduct);
 
-        Product updateProduct = handlingService.update(product);
+        Product updateProduct = handlingService.updateProduct(product);
 
         if (updateProduct != null){
 
@@ -100,18 +98,18 @@ public class Presenter {
     }
     public String [][] getProduct(){
 
-        if (handlingService.getProduct().length > 0){
+        if (handlingService.getAllProducts().length > 0){
 
-            String [][] array = new String[handlingService.getProduct().length][6];
+            String [][] array = new String[handlingService.getAllProducts().length][6];
 
-            for (int j = 0; j < handlingService.getProduct().length; j++) {
+            for (int j = 0; j < handlingService.getAllProducts().length; j++) {
 
-                array[j][0] = handlingService.getProduct()[j].getIdProduct();
-                array[j][1] = handlingService.getProduct()[j].getDescription();
-                array[j][2] = Double.valueOf(handlingService.getProduct()[j].getValue()).toString();
-                array[j][3] = Integer.valueOf(handlingService.getProduct()[j].getStock()).toString();
-                array[j][4] = (handlingService.getProduct()[j].getDateExpired()).toString();
-                array[j][5] = (handlingService.getProduct()[j].getTypeProduct()).toString();
+                array[j][0] = handlingService.getAllProducts()[j].getIdProduct();
+                array[j][1] = handlingService.getAllProducts()[j].getDescription();
+                array[j][2] = Double.valueOf(handlingService.getAllProducts()[j].getValue()).toString();
+                array[j][3] = Integer.valueOf(handlingService.getAllProducts()[j].getStock()).toString();
+                array[j][4] = (handlingService.getAllProducts()[j].getDateExpired()).toString();
+                array[j][5] = (handlingService.getAllProducts()[j].getTypeProduct()).toString();
             }
 
             return array;
@@ -120,22 +118,45 @@ public class Presenter {
         }
     }
     //- El sistema debe permitir agregar facturas al sistema
-    public int addBill() {
-        return 0;
+    public String addBill(Bill bill) {
+        LocalDate dateBill = bill.getDateBill();
+        handlingService.addBill(bill);
+        return bill.getNumber();
     }
 
     //- El sistema debe permitir adicionar detalles a una factura
-    public String addDetails() {
-        return null;
+    public boolean addDetails(Bill number, Product Id, Detail cant) {
+        return handlingService.addProductToBill(number.getNumber(), Id.getIdProduct(), cant.getCant());
     }
 
-    //- El sistema debe permitir actualizar las existencias de los productos
-    public int updateStockProduct(){
-        return 0;
+    public double calculateBillTotal(Bill bill){
+        return handlingService.calculateBillTotal(bill.getNumber());
     }
 
     //- El sistema debe permitir consultar los detalles de una factura
-    public String checkBill(){
-        return null;
+
+    public String[] checkBill(Bill bill){
+        Product[] products = handlingService.checkBill(bill.getNumber());
+        if (products != null){
+            String[] productArray = new String[products.length];
+            for (int i = 0 ; i < products.length ; i++){
+                productArray[i] = getProductsString(products[i]);
+            }
+            return productArray;
+        }else {
+            return null;
+        }
+    }
+    private String getProductsString(Product product) {
+        return String.join(",", product.getIdProduct(), product.getDescription(),
+                Double.toString(product.getValue()), Integer.toString(product.getStock()),
+                product.getDateExpired().toString(), product.getTypeProduct().toString());
+    }
+
+    //- El sistema debe permitir actualizar las existencias de los productos
+    public int updateStock(Product product, int newStock) {
+        Product updateProduct = handlingService.updateStock(product.getIdProduct(), product.getStock());
+        int stockActual = product.getStock() - newStock;
+        return stockActual;
     }
 }
