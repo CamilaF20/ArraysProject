@@ -87,7 +87,22 @@ public class HandlingService {
      * @return retorna el producto actualizado
      */
     //Update
-    public Product update (String Id) {
+    public Product update (Product Id) {
+        if (findId(Id.getIdProduct()) != null) {
+            int updatePosition = 0;
+            for (int i = 0; i < products.length; i++) {
+                if (products[i].getIdProduct().equals(Id.getIdProduct())) {
+                    updatePosition = i;
+                }
+            }
+
+            Product productAux[] = products;
+
+            productAux[updatePosition] = Id;
+            products = productAux;
+
+            return products[updatePosition];
+        }
         return null;
     }
 

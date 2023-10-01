@@ -69,6 +69,35 @@ public class Presenter {
             return null;
         }
     }
+    public String[] update(String[] array) {
+
+        String Id = array[0];
+        String description = array[1];
+        double value = Double.parseDouble(array[2]);
+        int stock = Integer.parseInt(array[3]);
+        LocalDate dateExpired = LocalDate.parse(array[4]);
+        ETypeProduct typeProduct = ETypeProduct.valueOf(array[5]);
+
+        Product product = new Product(Id,description,value,stock,dateExpired,typeProduct);
+
+        Product updateProduct = handlingService.update(product);
+
+        if (updateProduct != null){
+
+            String [] arrays = new String[6];
+
+            array[0] = product.getIdProduct();
+            array[1] = product.getDescription();
+            array[2] = Double.valueOf(product.getValue()).toString();
+            array[3] = Integer.valueOf(product.getStock()).toString();
+            array[4] = (product.getDateExpired()).toString();
+            array[5] = (product.getTypeProduct()).toString();
+
+            return array;
+        }else {
+            return null;
+        }
+    }
     public int manageProducts(){
         return 0;
     }
