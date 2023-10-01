@@ -112,17 +112,4 @@ public class Product {
           case VIVERES -> this.value * 0.08;
         };
     }
-
-    @Override
-    public String toString() {
-        return "Product{ " +
-                "Id Product= " + idProduct + '\'' +
-                ", description= " + description + '\'' +
-                ", value= " + value +
-                ", stock= " + stock +
-                ", STOCK_MIN= " + STOCK_MIN +
-                ", dateExpired= " + dateExpired +
-                ", typeProduct= " + typeProduct +
-                '}';
-    }
 }
