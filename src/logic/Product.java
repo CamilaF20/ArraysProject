@@ -105,13 +105,12 @@ public class Product {
     }
 
     public double calcIva() {
-
      return switch (this.typeProduct) {
-                case ASEO -> this.value * 0.14;
-                case MEDICINAS -> this.value* 0.04;
-                case LICORES -> this.value * 0.19;
-                case VIVERES -> this.value * 0.08;
-         default -> 0.0; }; 
+          case ASEO ->  this.value * 0.14;
+          case MEDICINAS -> this.value * 0.04;
+          case LICORES ->  this.value * 0.19;
+          case VIVERES -> this.value * 0.08;
+        };
     }
 
     @Override

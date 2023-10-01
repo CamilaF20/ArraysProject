@@ -17,7 +17,7 @@ public class Bill {
 
     }
     
-      public String getNumber() {
+    public String getNumber() {
         return number;
     }
 

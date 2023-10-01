@@ -39,26 +39,15 @@ public class Runner {
 
                         optionMenu = sc.nextInt();
                         switch (optionMenu) {
-                            case 1:
-                                runner.addProduct();
-                                break;
-                            case 2:
-                                runner.findProduct();
-                                break;
-                            case 3:
-                                runner.deleteProduct();
-                                break;
-                            case 4:
-                                runner.updateProduct();
-                                break;
-                            case 5:
-                                System.out.println("Completed Execution");
-                                break;
-
-                            default:
-                                System.out.println("Invalid Option");
-                                break;
+                            case 1 -> runner.addProduct();
+                            case 2 -> runner.findProduct();
+                            case 3 -> runner.deleteProduct();
+                            case 4 -> runner.updateProduct();
+                            case 5 -> System.out.println("Completed Execution");
+                            default -> System.out.println("Invalid Option");
                         }
+                        runner.getProduct();
+
                     }while (optionMenu != 5);
                 case 2:
 
@@ -90,7 +79,7 @@ public class Runner {
             String stock = sc.next();
             System.out.println("Enter the date expired año-mes-dia");
             String date = sc.next();
-            System.out.println("Enter de type product");
+            System.out.println("Enter de type product : VIVERES, MEDICINAS, ASEO, LICORES");
             String type = sc.next();
 
             String[] array = new String[6];
@@ -116,7 +105,7 @@ public class Runner {
     }
 
     public void findProduct() {
-        System.out.println("Enter the plate ");
+        System.out.println("Enter the Id ");
         String IdFind = sc.next();
 
         String[] findId = presenter.findId(IdFind);
@@ -124,7 +113,7 @@ public class Runner {
             System.err.println("Invalid Product");
         } else {
 
-            System.out.println(" Vehicle Found ");
+            System.out.println(" Product Found ");
             for (int i = 0; i < findId.length; i++) {
                 System.out.println(findId[i]);
             }
@@ -160,7 +149,7 @@ public class Runner {
         String stock = sc.next();
         System.out.println("Enter the date expired año-mes-dia");
         String date = sc.next();
-        System.out.println("Enter de type product");
+        System.out.println("Enter the type product: VIVERES, MEDICINAS, ASEO, LICORES");
         String type = sc.next();
 
         String [] update = new String[6];
@@ -181,5 +170,25 @@ public class Runner {
         } else {
             System.err.println("The product does not exist");
         }
+    }
+    public void getProduct(){
+        System.out.println(" Product List ");
+        for (int i = 0; i < presenter.getProduct().length; i++) {
+            System.out.println(" Product Id " + presenter.getProduct()[i][0]);
+            for (int j = 0; j < presenter.getProduct()[i].length; j++) {
+                System.out.println(presenter.getProduct()[i][j]);
+            }
+        }
+    }
+    public void addBill(){
+    }
+    public void addDetails(){
+
+    }
+    public void updateStock(){
+
+    }
+    public void checkBill(){
+
     }
 }

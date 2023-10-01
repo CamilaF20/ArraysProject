@@ -14,15 +14,6 @@ public class HandlingService {
         position = 0;
     }
 
-    /**
-     * Metodo que permite la gestion del producto
-     * @return
-     */
-    public int manageProducts() {
-
-        return 0;
-    }
-
     private void ensureCapacity(){
         int newSize = products.length + 1;
         Product[] newArray = new Product [newSize];
@@ -129,7 +120,11 @@ public class HandlingService {
     //Read
     //Retorna el arreglo de los productos
     public Product[] getProduct(){
-        return null;
+        Product[] newArray = new Product[position];
+        for( int index = 0 ; index < position ; index++ ){
+            newArray[index] = products[index];
+        }
+        return newArray;
     }
 
     /**
@@ -137,6 +132,7 @@ public class HandlingService {
      * @return retorna la factura agregada
      */
     public Bill addBill() {
+//        Bill bill = new Bill();
         return null;
     }
 
@@ -164,6 +160,7 @@ public class HandlingService {
      * @return retorna la factura consultada
      */
     public Bill checkBill(String number){
+
         return null;
     }
 }

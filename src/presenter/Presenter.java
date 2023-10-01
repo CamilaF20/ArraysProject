@@ -98,11 +98,29 @@ public class Presenter {
             return null;
         }
     }
-    public int manageProducts(){
-        return 0;
+    public String [][] getProduct(){
+
+        if (handlingService.getProduct().length > 0){
+
+            String [][] array = new String[handlingService.getProduct().length][6];
+
+            for (int j = 0; j < handlingService.getProduct().length; j++) {
+
+                array[j][0] = handlingService.getProduct()[j].getIdProduct();
+                array[j][1] = handlingService.getProduct()[j].getDescription();
+                array[j][2] = Double.valueOf(handlingService.getProduct()[j].getValue()).toString();
+                array[j][3] = Integer.valueOf(handlingService.getProduct()[j].getStock()).toString();
+                array[j][4] = (handlingService.getProduct()[j].getDateExpired()).toString();
+                array[j][5] = (handlingService.getProduct()[j].getTypeProduct()).toString();
+            }
+
+            return array;
+        }else {
+            return null;
+        }
     }
     //- El sistema debe permitir agregar facturas al sistema
-    public int addInvoice() {
+    public int addBill() {
         return 0;
     }
 
@@ -117,7 +135,7 @@ public class Presenter {
     }
 
     //- El sistema debe permitir consultar los detalles de una factura
-    public String checkInvoice(){
+    public String checkBill(){
         return null;
     }
 }
