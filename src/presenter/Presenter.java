@@ -102,7 +102,7 @@ public class Presenter {
         return 0;
     }
     //- El sistema debe permitir agregar facturas al sistema
-    public int addInvoice() {
+    public int addBill() {
         return 0;
     }
 
@@ -117,7 +117,7 @@ public class Presenter {
     }
 
     //- El sistema debe permitir consultar los detalles de una factura
-    public String checkInvoice(){
+    public String checkBill(){
         return null;
     }
 }
