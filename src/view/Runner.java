@@ -341,7 +341,7 @@ import java.util.InputMismatchException;
             String productId = sc.next();
     
             if (productId.equalsIgnoreCase("done")) {
-                break; 
+                break;
             }
     
             Product product = presenter.findId(productId);
@@ -350,24 +350,39 @@ import java.util.InputMismatchException;
                 continue;
             }
     
-            System.out.println("Enter the quantity you wish to purchase");
-            int quantity = sc.nextInt();
+            int availableStock = product.getStock();
     
-            if (quantity <= 0 || quantity > product.getStock()) {
-                System.err.println("Invalid quantity or insufficient stock.");
-                continue; 
-            }
+            while (true) {
+                System.out.println("Enter the quantity you wish to purchase");
+                int quantity = sc.nextInt();
     
-            Detail detail = new Detail(product, (short) quantity);
+                if (quantity <= 0) {
+                    System.err.println("Invalid quantity. Please enter a positive quantity.");
+                    continue;
+                }
     
-            boolean detailsAdded = presenter.addDetails(bill, product, detail);
+                if (quantity > availableStock) {
+                    System.err.println("Insufficient stock. Available stock: " + availableStock);
+                    continue;
+                }
     
-            if (detailsAdded) {
-                // Resta la cantidad comprada del stock del producto
-                product.setStock(product.getStock() - quantity);
-                System.out.println("Product added to the bill.");
-            } else {
-                System.err.println("Details not added to the bill.");
+                // Verificar si después de vender el producto, el stock restante es mayor o igual a 5
+                if (availableStock - quantity >= 5) {
+                    Detail detail = new Detail(product, (short) quantity);
+    
+                    boolean detailsAdded = presenter.addDetails(bill, product, detail);
+    
+                    if (detailsAdded) {
+                        // Resta la cantidad comprada del stock del producto
+                        product.setStock(product.getStock() - quantity);
+                        System.out.println("Product added to the bill.");
+                        break; 
+                    } else {
+                        System.err.println("Details not added to the bill.");
+                    }
+                } else {
+                    System.err.println("Selling this quantity will leave less than 5 in stock. Please enter a lower quantity.");
+                }
             }
         }
     
