@@ -356,12 +356,19 @@ import java.util.InputMismatchException;
         System.out.println("Enter the new stock quantity");
         int newStock = sc.nextInt();
     
-        if (newStock < 5) {
-            System.err.println("Stock cannot be less than 5.");
+        if (newStock < 1) {
+            System.err.println("Stock cannot be less than 1.");
             return;
         }
     
-        int stockActual = presenter.updateStock(product, newStock);
+        int updatedStock = product.getStock() + newStock;
+    
+        if (updatedStock < 5) {
+            System.err.println("Warning: The new stock is less than 5.");
+          
+        }
+    
+        int stockActual = presenter.updateStock(product, updatedStock);
         System.out.println("Stock updated successfully. Current stock: " + stockActual);
     }
 
@@ -382,9 +389,33 @@ import java.util.InputMismatchException;
             System.out.println("Date: " + bill.getDateBill());
             System.out.println("Products:");
     
+            double totalAmount = 0.0;  // Initialize total amount
+    
             for (String detail : details) {
-                System.out.println(detail);
+                // Split each detail into parts (productId and quantity)
+                String[] parts = detail.split(",");
+                if (parts.length == 2) {
+                    String productId = parts[0];
+                    int quantity = Integer.parseInt(parts[1]);
+    
+                    // Retrieve the product information
+                    Product product = presenter.findId(productId);
+    
+                    if (product != null) {
+                        double productPrice = product.getValue();
+                        double itemTotal = productPrice * quantity;
+                        totalAmount += itemTotal;  // Update total amount
+                        System.out.println("Product: " + product.getDescription());
+                        System.out.println("Quantity: " + quantity);
+                        System.out.println("Total for this product: " + itemTotal);
+                    } else {
+                        System.out.println("Product with ID " + productId + " not found.");
+                    }
+                }
             }
+    
+            // Display the total purchase amount
+            System.out.println("Total Purchase Amount: " + totalAmount);
         } else {
             System.out.println("No details found for this bill.");
         }
