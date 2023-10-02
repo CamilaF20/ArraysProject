@@ -7,7 +7,9 @@ import presenter.Presenter;
 import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
 import java.util.Scanner;
+
 import java.util.InputMismatchException;
+
    
     /**
     * The `Runner` class represents the main user interface for interacting with the system.
@@ -107,60 +109,72 @@ import java.util.InputMismatchException;
     
 
         public void addProduct() {
-            int addP;
+            int addP = 0;
             do {
                 System.out.println("Enter the Id");
                 String Id = sc.next();
+        
+                // Check if the product ID already exists
+                if (presenter.findId(Id) != null) {
+                    System.err.println("Product with ID " + Id + " already exists. Please enter a unique ID.");
+                    continue; // Continue the loop to allow the user to enter a different ID
+                }
+        
                 System.out.println("Enter the description");
                 String description = sc.next();
                 System.out.println("Enter the value");
                 double value = sc.nextDouble();
-                System.out.println("Enter the stock");
-                int stock = sc.nextInt();
-
+        
+                int stock;
+                do {
+                    System.out.println("Enter the stock (minimum 5)");
+                    stock = sc.nextInt();
+                    if (stock < 5) {
+                        System.err.println("Stock cannot be less than 5. Please enter a valid stock.");
+                    }
+                } while (stock < 5);
+        
                 LocalDate expirationDate = null;
                 boolean validDate = false;
-
+        
                 while (!validDate) {
                     System.out.println("Enter the date expired (yyyy-MM-dd)");
                     String date = sc.next();
-
+        
                     try {
-                        // Intenta parsear la fecha
                         expirationDate = LocalDate.parse(date);
-
-                        // Comprueba si la fecha es anterior a la fecha actual
+        
                         if (expirationDate.isBefore(LocalDate.now())) {
                             System.err.println("The entered date is in the past. Please enter a future date.");
                         } else {
                             validDate = true;
                         }
-                    } catch (Exception e) {
+                    } catch (DateTimeParseException e) {
                         System.err.println("Invalid date format. Please use yyyy-MM-dd.");
                     }
                 }
-
-                System.out.println("Enter de type product: VIVERES, MEDICINAS, ASEO, LICORES");
-                String type = sc.next().toUpperCase(); // Convierte a mayúsculas
-
+        
+                System.out.println("Enter the type product: VIVERES, MEDICINAS, ASEO, LICORES");
+                String type = sc.next().toUpperCase();
+        
                 String[] array = new String[6];
-
+        
                 array[0] = Id;
                 array[1] = description;
                 array[2] = Double.toString(value);
                 array[3] = Integer.toString(stock);
-                array[4] = expirationDate.toString(); // Almacenar la fecha formateada
+                array[4] = expirationDate.toString(); // Store the formatted date
                 array[5] = type;
-
+        
                 if (presenter.addProduct(array)) {
                     System.out.println("The product was added");
                 } else {
                     System.err.println("The product was not added");
                 }
-
+        
                 System.out.println("Do you want to add another product? Enter 1. No, Enter 2. Yes");
                 addP = sc.nextInt();
-
+        
             } while (addP == 2);
         }
 
@@ -216,10 +230,10 @@ import java.util.InputMismatchException;
         String date = sc.next();
 
         try {
-            // Intenta parsear la fecha
+           
             expirationDate = LocalDate.parse(date);
 
-            // Comprueba si la fecha es anterior a la fecha actual
+            
             if (expirationDate.isBefore(LocalDate.now())) {
                 System.err.println("The entered date is in the past. Please enter a future date.");
             } else {
@@ -267,79 +281,88 @@ import java.util.InputMismatchException;
         }
     }
 
-       public void addBill() {
-        int add;
+    public void addBill() {
+        int add=0;
         do {
             System.out.println("Enter the Bill number");
             String number = sc.next();
-
+    
+            if (presenter.findBill(number) != null) {
+                System.err.println("Bill with number " + number + " already exists. Please enter a unique number.");
+                continue;
+            }
+    
             if (presenter.getProduct() == null || presenter.getProduct().length == 0) {
                 System.err.println("No products available. Cannot create a bill.");
                 return;
             }
-
+    
             LocalDate dateBill = LocalDate.now();
-
-         
-
+    
             String[] array = new String[2];
-
+    
             array[0] = number;
             array[1] = dateBill.toString();
-
+    
             if (presenter.addBill(array)) {
                 System.out.println("The bill was added");
             } else {
                 System.err.println("The bill was not added");
             }
-
+    
             System.out.println("Do you want to add another bill? Enter 1. No, Enter 2. Yes");
             add = sc.nextInt();
-
+    
         } while (add == 2);
     }
 
     public void addDetails() {
-        runner.getProduct();
         runner.getBill();
         System.out.println("Enter the bill number you want to edit");
         String number = sc.next();
     
-       
         Bill bill = presenter.findBill(number);
         if (bill == null) {
             System.err.println("The bill does not exist.");
             return;
         }
     
-        System.out.println("Enter the ID of the product you want to add");
-        String productId = sc.next();
+        while (true) {
+            System.out.println("Enter the ID of the product you want to add (or type 'done' to finish adding products)");
+            String productId = sc.next();
     
-        // Validar que el producto exista antes de agregar detalles
-        Product product = presenter.findId(productId);
-        if (product == null) {
-            System.err.println("The product does not exist.");
-            return;
+            if (productId.equalsIgnoreCase("done")) {
+                break; 
+            }
+    
+            Product product = presenter.findId(productId);
+            if (product == null) {
+                System.err.println("The product does not exist.");
+                continue;
+            }
+    
+            System.out.println("Enter the quantity you wish to purchase");
+            int quantity = sc.nextInt();
+    
+   
+            if (quantity <= 0 || quantity > product.getStock()) {
+                System.err.println("Invalid quantity or insufficient stock.");
+                continue; 
+            }
+    
+            
+            Detail detail = new Detail(product, (short) quantity);
+    
+            boolean detailsAdded = presenter.addDetails(bill, product, detail);
+    
+            if (detailsAdded) {
+                System.out.println("Product added to the bill.");
+            } else {
+                System.err.println("Details not added to the bill.");
+            }
         }
     
-        System.out.println("Enter the quantity you wish to purchase");
-        int quantity = sc.nextInt();
-    
-       
-        if (product.getStock() < quantity) {
-            System.err.println("Insufficient stock.");
-            return;
-        }
-    
-       
-        Detail detail = new Detail(product, (short) quantity);
-    
-     
-        if (presenter.addDetails(bill, product, detail)) {
-            System.out.println("Details added to the bill");
-        } else {
-            System.err.println("Details not added to the bill");
-        }
+        System.out.println("Details added to the bill successfully.");
     }
     
     public void updateStock() {
@@ -363,15 +386,15 @@ import java.util.InputMismatchException;
     
         int updatedStock = product.getStock() + newStock;
     
+
         if (updatedStock < 5) {
-            System.err.println("Warning: The new stock is less than 5.");
-          
+            System.err.println("Warning: The new stock is less than 5. Minimum stock is 5.");
+            return;
         }
     
         int stockActual = presenter.updateStock(product, updatedStock);
         System.out.println("Stock updated successfully. Current stock: " + stockActual);
     }
-
     public void checkBill() {
         runner.getBill();
         System.out.println("Enter the bill number you want to check");
@@ -389,16 +412,16 @@ import java.util.InputMismatchException;
             System.out.println("Date: " + bill.getDateBill());
             System.out.println("Products:");
     
-            double totalAmount = 0.0;  // Initialize total amount
+            double totalAmount = 0.0;  
     
             for (String detail : details) {
-                // Split each detail into parts (productId and quantity)
+                
                 String[] parts = detail.split(",");
                 if (parts.length == 2) {
                     String productId = parts[0];
                     int quantity = Integer.parseInt(parts[1]);
     
-                    // Retrieve the product information
+                   
                     Product product = presenter.findId(productId);
     
                     if (product != null) {
@@ -414,7 +437,6 @@ import java.util.InputMismatchException;
                 }
             }
     
-            // Display the total purchase amount
             System.out.println("Total Purchase Amount: " + totalAmount);
         } else {
             System.out.println("No details found for this bill.");
