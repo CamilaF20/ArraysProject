@@ -336,6 +336,8 @@ import java.util.InputMismatchException;
             return;
         }
     
+        double totalValue = 0.0; // Variable para calcular el valor total de los detalles agregados
+    
         while (true) {
             System.out.println("Enter the ID of the product you want to add (or type 'done' to finish adding products)");
             String productId = sc.next();
@@ -352,42 +354,42 @@ import java.util.InputMismatchException;
     
             int availableStock = product.getStock();
     
-            while (true) {
-                System.out.println("Enter the quantity you wish to purchase");
-                int quantity = sc.nextInt();
+            System.out.println("Available stock: " + availableStock);
     
-                if (quantity <= 0) {
-                    System.err.println("Invalid quantity. Please enter a positive quantity.");
-                    continue;
-                }
+            System.out.println("Enter the quantity you wish to purchase");
+            int quantity = sc.nextInt();
     
-                if (quantity > availableStock) {
-                    System.err.println("Insufficient stock. Available stock: " + availableStock);
-                    continue;
-                }
+            if (quantity <= 0) {
+                System.err.println("Invalid quantity. Please enter a positive quantity.");
+                continue;
+            }
     
-                // Verificar si después de vender el producto, el stock restante es mayor o igual a 5
-                if (availableStock - quantity >= 5) {
-                    Detail detail = new Detail(product, (short) quantity);
+            if (quantity > availableStock) {
+                System.err.println("Insufficient stock. Available stock: " + availableStock);
+                continue;
+            }
     
-                    boolean detailsAdded = presenter.addDetails(bill, product, detail);
+            Detail detail = new Detail(product, (short) quantity);
+            boolean detailsAdded = presenter.addDetails(bill, product, detail);
     
-                    if (detailsAdded) {
-                        // Resta la cantidad comprada del stock del producto
-                        product.setStock(product.getStock() - quantity);
-                        System.out.println("Product added to the bill.");
-                        break; 
-                    } else {
-                        System.err.println("Details not added to the bill.");
-                    }
-                } else {
-                    System.err.println("Selling this quantity will leave less than 5 in stock. Please enter a lower quantity.");
-                }
+            if (detailsAdded) {
+                // Resta la cantidad comprada del stock del producto
+                product.setStock(product.getStock() - quantity);
+    
+                // Calcular el subtotal del detalle y agregarlo al valor total
+                double detailSubtotal = product.getValue() * quantity;
+                totalValue += detailSubtotal;
+    
+                System.out.println("Product added to the bill.");
+            } else {
+                System.err.println("Details not added to the bill.");
             }
         }
     
         System.out.println("Details added to the bill successfully.");
+        System.out.println("Total value of the bill: " + totalValue);
     }
+    
     
     public void updateStock() {
         runner.getProduct();
@@ -479,6 +481,9 @@ import java.util.InputMismatchException;
             System.out.println("No details found for this bill.");
         }
     }
+
+
+    
     
     
 
