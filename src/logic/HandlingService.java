@@ -217,6 +217,7 @@ public class HandlingService {
             return new Product[0];
         }
     }
+
     /**
      * Update the stock quantity of a product.
      *

@@ -26,7 +26,7 @@ import java.util.InputMismatchException;
         public void menu() {
             int option;
             do {
-                System.out.println("************* MENU *********** \n" +
+                System.out.println("\n ************* MENU *********** \n" +
                         "1. Manage products \n" +
                         "2. Add Bill\n" +
                         "3. Add Details Bill\n" +
@@ -70,7 +70,7 @@ import java.util.InputMismatchException;
         public void manageProductsMenu() {
             int optionMenu;
             do {
-                System.out.println("******** Menu ********\n" +
+                System.out.println("\n******** Menu ********\n" +
                         "1. Add Product \n" +
                         "2. Search Product \n" +
                         "3. Delete Product \n" +
@@ -276,11 +276,11 @@ import java.util.InputMismatchException;
     }
 }
     public void getProduct() {
-        System.out.println("******* Product List *******");
+        System.out.println("\n******* Product List *******");
         String[][] products = presenter.getProduct();
         if (products != null) {
             for (int i = 0; i < products.length; i++) {
-                System.out.println(" Product Id " + products[i][0]);
+                System.out.println("\n Product Id " + products[i][0]);
                 for (int j = 0; j < products[i].length; j++) {
                     System.out.println(products[i][j]);
                 }
@@ -339,6 +339,7 @@ import java.util.InputMismatchException;
         double totalValue = 0.0; // Variable para calcular el valor total de los detalles agregados
     
         while (true) {
+            runner.getProduct();
             System.out.println("Enter the ID of the product you want to add (or type 'done' to finish adding products)");
             String productId = sc.next();
     
@@ -374,10 +375,10 @@ import java.util.InputMismatchException;
     
             if (detailsAdded) {
                 // Resta la cantidad comprada del stock del producto
-                product.setStock(product.getStock() - quantity);
-    
+                product.setStock(product.getStock()-quantity);
+                int cant = quantity;
                 // Calcular el subtotal del detalle y agregarlo al valor total
-                double detailSubtotal = product.getValue() * quantity;
+                double detailSubtotal = product.getValue() * cant;
                 totalValue += detailSubtotal;
     
                 System.out.println("Product added to the bill.");
@@ -385,7 +386,7 @@ import java.util.InputMismatchException;
                 System.err.println("Details not added to the bill.");
             }
         }
-    
+
         System.out.println("Details added to the bill successfully.");
         System.out.println("Total value of the bill: " + totalValue);
     }
@@ -446,14 +447,15 @@ import java.util.InputMismatchException;
         if (!productsInBill.isEmpty()) {
             System.out.println("Bill Number: " + bill.getNumber());
             System.out.println("Date: " + bill.getDateBill());
-            System.out.println("Products:");
+            System.out.println("*** Products ***");
     
             double totalAmountWithTax = 0.0;
     
             for (Product product : productsInBill) {
                 // No necesitas obtener la cantidad del detalle aquí, ya que tienes los productos directamente
-                int quantity = 1; // Cada producto aparece una vez
-    
+                int quantity = 0; // Cada producto aparece una vez
+                quantity = product.getStock();
+
                 double productPrice = product.getValue();
                 double itemTotal = productPrice * quantity;
     
@@ -482,18 +484,12 @@ import java.util.InputMismatchException;
         }
     }
 
-
-    
-    
-    
-
-    
     public void getBill() {
-        System.out.println("******* Bill List ******");
+        System.out.println("\n******* Bill List ******");
         String[][] bills = presenter.getBill();
         if (bills != null) {
             for (int i = 0; i < bills.length; i++) {
-                System.out.println(" Bill Number " + bills[i][0]);
+                System.out.println("\n Bill Number " + bills[i][0]);
                 for (int j = 0; j < bills[i].length; j++) {
                     System.out.println(bills[i][j]);
                 }
