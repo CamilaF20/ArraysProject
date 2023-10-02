@@ -353,18 +353,18 @@ import java.util.InputMismatchException;
             System.out.println("Enter the quantity you wish to purchase");
             int quantity = sc.nextInt();
     
-   
             if (quantity <= 0 || quantity > product.getStock()) {
                 System.err.println("Invalid quantity or insufficient stock.");
                 continue; 
             }
     
-            
             Detail detail = new Detail(product, (short) quantity);
     
             boolean detailsAdded = presenter.addDetails(bill, product, detail);
     
             if (detailsAdded) {
+                // Resta la cantidad comprada del stock del producto
+                product.setStock(product.getStock() - quantity);
                 System.out.println("Product added to the bill.");
             } else {
                 System.err.println("Details not added to the bill.");
@@ -378,32 +378,32 @@ import java.util.InputMismatchException;
         runner.getProduct();
         System.out.println("Enter the ID of the product you want to update stock");
         String productId = sc.next();
-    
+
         Product product = presenter.findId(productId);
         if (product == null) {
             System.err.println("The product does not exist.");
             return;
         }
-    
-        System.out.println("Enter the new stock quantity");
-        int newStock = sc.nextInt();
-    
-        if (newStock < 1) {
-            System.err.println("Stock cannot be less than 1.");
+
+        System.out.println("Enter the additional stock quantity (positive to add, negative to subtract)");
+        int additionalStock = sc.nextInt();
+
+        if (additionalStock == 0) {
+            System.err.println("Invalid stock quantity. Stock quantity cannot be zero.");
             return;
         }
-    
-        int updatedStock = product.getStock() + newStock;
-    
+
+        int updatedStock = product.getStock() + additionalStock;
 
         if (updatedStock < 5) {
             System.err.println("Warning: The new stock is less than 5. Minimum stock is 5.");
             return;
         }
-    
+
         int stockActual = presenter.updateStock(product, updatedStock);
         System.out.println("Stock updated successfully. Current stock: " + stockActual);
     }
+    
     public void checkBill() {
         runner.getBill();
         System.out.println("Enter the bill number you want to check");
@@ -421,37 +421,40 @@ import java.util.InputMismatchException;
             System.out.println("Date: " + bill.getDateBill());
             System.out.println("Products:");
     
-            double totalAmount = 0.0;  
+            double totalAmount = 0.0;
     
             for (String detail : details) {
-                
                 String[] parts = detail.split(",");
                 if (parts.length == 2) {
                     String productId = parts[0];
                     int quantity = Integer.parseInt(parts[1]);
     
-                   
                     Product product = presenter.findId(productId);
     
                     if (product != null) {
                         double productPrice = product.getValue();
                         double itemTotal = productPrice * quantity;
-                        totalAmount += itemTotal;  // Update total amount
+    
+                        // Calculate the total cost of the item with tax based on product type
+                        double itemTotalWithTax = itemTotal + product.calcIva() * quantity;
+    
+                        totalAmount += itemTotalWithTax; // Update total amount with tax
                         System.out.println("Product: " + product.getDescription());
                         System.out.println("Quantity: " + quantity);
-                        System.out.println("Total for this product: " + itemTotal);
+                        System.out.println("Total for this product (including tax): " + itemTotalWithTax);
                     } else {
                         System.out.println("Product with ID " + productId + " not found.");
                     }
                 }
             }
     
-            System.out.println("Total Purchase Amount: " + totalAmount);
+            // Calculate and display the total value of all details
+            System.out.println("Total Purchase Amount (including tax): " + totalAmount);
         } else {
             System.out.println("No details found for this bill.");
         }
     }
-
+    
     public void getBill() {
         System.out.println("******* Bill List ******");
         String[][] bills = presenter.getBill();
