@@ -154,8 +154,17 @@ import java.util.InputMismatchException;
                     }
                 }
         
-                System.out.println("Enter the type product: VIVERES, MEDICINAS, ASEO, LICORES");
-                String type = sc.next().toUpperCase();
+                String type;
+                boolean validType = false;
+                do {
+                    System.out.println("Enter the type product: VIVERES, MEDICINAS, ASEO, LICORES");
+                    type = sc.next().toUpperCase();
+                    if (type.equals("VIVERES") || type.equals("MEDICINAS") || type.equals("ASEO") || type.equals("LICORES")) {
+                        validType = true;
+                    } else {
+                        System.err.println("Invalid type. Please enter a valid type.");
+                    }
+                } while (!validType);
         
                 String[] array = new String[6];
         
