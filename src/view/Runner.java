@@ -106,7 +106,7 @@ import java.util.InputMismatchException;
         }
     
 
-        private void addProduct() {
+        public void addProduct() {
             int addP;
             do {
                 System.out.println("Enter the Id");
@@ -347,7 +347,6 @@ import java.util.InputMismatchException;
         System.out.println("Enter the ID of the product you want to update stock");
         String productId = sc.next();
     
- 
         Product product = presenter.findId(productId);
         if (product == null) {
             System.err.println("The product does not exist.");
@@ -357,6 +356,11 @@ import java.util.InputMismatchException;
         System.out.println("Enter the new stock quantity");
         int newStock = sc.nextInt();
     
+        if (newStock < 5) {
+            System.err.println("Stock cannot be less than 5.");
+            return;
+        }
+    
         int stockActual = presenter.updateStock(product, newStock);
         System.out.println("Stock updated successfully. Current stock: " + stockActual);
     }
@@ -365,17 +369,19 @@ import java.util.InputMismatchException;
         runner.getBill();
         System.out.println("Enter the bill number you want to check");
         String number = sc.next();
-
-        
+    
         Bill bill = presenter.findBill(number);
         if (bill == null) {
             System.err.println("The bill does not exist.");
             return;
         }
-
+    
         String[] details = presenter.checkBill(bill);
         if (details != null) {
-            System.out.println("Bill Details:");
+            System.out.println("Bill Number: " + bill.getNumber());
+            System.out.println("Date: " + bill.getDateBill());
+            System.out.println("Products:");
+    
             for (String detail : details) {
                 System.out.println(detail);
             }
