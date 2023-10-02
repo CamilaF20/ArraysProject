@@ -3,50 +3,79 @@ package presenter;
 import logic.*;
 
 import java.time.LocalDate;
-
+/**
+ * The `Presenter` class serves as the intermediary between the user interface and the handling service.
+ */
 public class Presenter {
     private HandlingService handlingService;
 
+    /**
+     * Default constructor for creating an instance of the `Presenter` class.
+     */
     public Presenter() {
         this.handlingService = new HandlingService();
     }
 
-    public String[] findId(String number){
-
-        Product product = handlingService.findProductById(number);
-
-        if (product != null){
-            String [] array = new String[6];
-
-            array[0] = product.getIdProduct();
-            array[1] = product.getDescription();
-            array[2] = Double.valueOf(product.getValue()).toString();
-            array[3] = Integer.valueOf(product.getStock()).toString();
-            array[4] = (product.getDateExpired()).toString();
-            array[5] = (product.getTypeProduct()).toString();
-
-            return array;
-
-        }else {
-            return null;
-        }
+    /**
+     * Find a product by its ID and return its information as an array of strings.
+     *
+     * @param number The unique identifier of the product to find.
+     * @return An array containing product information or null if the product is not found.
+     */
+public String[] findById(String number) {
+    Product product = handlingService.findProductById(number);
+    if (product != null) {
+        String[] array = new String[6];
+        array[0] = product.getIdProduct();
+        array[1] = product.getDescription();
+        array[2] = Double.toString(product.getValue());
+        array[3] = Integer.toString(product.getStock());
+        array[4] = product.getDateExpired().toString();
+        array[5] = product.getTypeProduct().toString();
+        return array;
+    } else {
+        return null;
+    }
+}
+    
+     /**
+     * Find a product by its ID and return the product object.
+     *
+     * @param number The unique identifier of the product to find.
+     * @return The product object or null if the product is not found.
+     */
+    public Product findId(String number) {
+        return handlingService.findProductById(number);
     }
 
-    public boolean addProduct(String[] array){
+     /**
+     * Add a new product using information provided in an array.
+     *
+     * @param array An array containing product information to be added.
+     * @return true if the product is successfully added, false otherwise.
+     */
 
-        String Id = array[0];
-        String description = array[1];
-        double value = Double.parseDouble(array[2]);
-        int stock = Integer.parseInt(array[3]);
-        LocalDate dateExpired = LocalDate.parse(array[4]);
-        ETypeProduct typeProduct = ETypeProduct.valueOf(array[5]);
+     public boolean addProduct(String[] array) {
 
-        Product product = new Product(Id, description, value, stock,dateExpired, typeProduct);
+         String Id = array[0];
+         String description = array[1];
+         double value = Double.parseDouble(array[2]);
+         int stock = Integer.parseInt(array[3]);
+         LocalDate dateExpired = LocalDate.parse(array[4]);
+         ETypeProduct typeProduct = ETypeProduct.valueOf(array[5]);
 
-        return handlingService.addProduct(product);
-    }
+         Product product = new Product(Id, description, value, stock, dateExpired, typeProduct);
 
-    public String[] delete (String Id) {
+         return handlingService.addProduct(product);
+     }
+
+    /**
+     * Delete a product by its ID and return its information as an array of strings.
+     *
+     * @param Id The unique identifier of the product to delete.
+     * @return An array containing deleted product information or null if the product is not found.
+     */
+    public String[] delete(String Id) {
 
         Product product = handlingService.deleteProduct(Id);
 
@@ -67,6 +96,13 @@ public class Presenter {
             return null;
         }
     }
+    
+    /**
+     * Update a product using information provided in an array and return the updated information.
+     *
+     * @param array An array containing updated product information.
+     * @return An array containing the updated product information or null if the product is not found.
+     */
     public String[] update(String[] array) {
 
         String Id = array[0];
@@ -76,13 +112,11 @@ public class Presenter {
         LocalDate dateExpired = LocalDate.parse(array[4]);
         ETypeProduct typeProduct = ETypeProduct.valueOf(array[5]);
 
-        Product product = new Product(Id,description,value,stock,dateExpired,typeProduct);
+        Product product = new Product(Id, description, value, stock, dateExpired, typeProduct);
 
         Product updateProduct = handlingService.updateProduct(product);
 
-        if (updateProduct != null){
-
-            String [] arrays = new String[6];
+        if (updateProduct != null) {
 
             array[0] = product.getIdProduct();
             array[1] = product.getDescription();
@@ -92,10 +126,16 @@ public class Presenter {
             array[5] = (product.getTypeProduct()).toString();
 
             return array;
-        }else {
+        } else {
             return null;
         }
     }
+
+    /**
+     * Get a two-dimensional array containing information about all products.
+     *
+     * @return A two-dimensional array with product information or null if no products are found.
+     */
     public String [][] getProduct(){
 
         if (handlingService.getAllProducts().length > 0){
@@ -117,7 +157,12 @@ public class Presenter {
             return null;
         }
     }
-    //- El sistema debe permitir agregar facturas al sistema
+    /**
+     * Add a new bill to the system.
+     *
+     * @param bill An array containing bill information, including the bill number and date.
+     * @return true if the bill is successfully added, false otherwise.
+     */
     public boolean addBill(String[] bill) {
         String number = bill[0];
         LocalDate dateBill = LocalDate.parse(bill[1]);
@@ -125,46 +170,78 @@ public class Presenter {
         return handlingService.addBill(bill1);
     }
 
-    //- El sistema debe permitir adicionar detalles a una factura
+    /**
+     * Add details to a bill by specifying the bill number, product ID, and quantity.
+     *
+     * @param number The bill number to which details will be added.
+     * @param Id     The product ID to be added as a detail.
+     * @param cant   The quantity of the product to be added as a detail.
+     * @return true if the details are successfully added to the bill, false otherwise.
+     */
     public boolean addDetails(Bill number, Product Id, Detail cant) {
         return handlingService.addProductToBill(number.getNumber(), Id.getIdProduct(), cant.getCant());
     }
 
+     /**
+     * Calculate the total value of a bill.
+     *
+     * @param bill The bill for which the total value will be calculated.
+     * @return The total value of the bill.
+     */
     public double calculateBillTotal(Bill bill){
         return handlingService.calculateBillTotal(bill.getNumber());
     }
 
-    //- El sistema debe permitir consultar los detalles de una factura
+     /**
+     * Get product details from a bill and return them as an array of strings.
+     *
+     * @param bill The bill from which product details will be retrieved.
+     * @return An array of strings containing product details or null if no details are found.
+     */
+     public String[] checkBill(Bill bill) {
+         Product[] products = handlingService.checkBill(bill.getNumber());
+         if (products != null) {
+             String[] productArray = new String[products.length];
+             for (int i = 0; i < products.length; i++) {
+                 productArray[i] = getProductsString(products[i]);
+             }
+             return productArray;
+         } else {
+             return null;
+         }
+     }
+    
 
-    public String[] checkBill(Bill bill){
-        Product[] products = handlingService.checkBill(bill.getNumber());
-        if (products != null){
-            String[] productArray = new String[products.length];
-            for (int i = 0 ; i < products.length ; i++){
-                productArray[i] = getProductsString(products[i]);
-            }
-            return productArray;
-        }else {
-            return null;
-        }
-    }
     private String getProductsString(Product product) {
         return String.join(",", product.getIdProduct(), product.getDescription(),
                 Double.toString(product.getValue()), Integer.toString(product.getStock()),
                 product.getDateExpired().toString(), product.getTypeProduct().toString());
     }
 
-    //- El sistema debe permitir actualizar las existencias de los productos
+    /**
+     * Update the stock of a product and return the new stock quantity.
+     *
+     * @param product   The product whose stock will be updated.
+     * @param newStock  The new stock quantity to set.
+     * @return The updated stock quantity or -1 if the update is not successful.
+     */
     public int updateStock(Product product, int newStock) {
         Product updateProduct = handlingService.updateStock(product.getIdProduct(), product.getStock());
         int stockActual = product.getStock() - newStock;
         return stockActual;
     }
-    public String [][] getBill(){
 
-        if (handlingService.getBills().length > 0){
+    
+    /**
+     * Get a two-dimensional array containing information about all bills.
+     *
+     * @return A two-dimensional array with bill information or null if no bills are found.
+     */
+    public String[][] getBill() {
 
-            String [][] array = new String[handlingService.getBills().length][2];
+        if (handlingService.getBills().length > 0) {
+
+            String[][] array = new String[handlingService.getBills().length][2];
 
             for (int j = 0; j < handlingService.getBills().length; j++) {
 
@@ -174,9 +251,18 @@ public class Presenter {
             }
 
             return array;
-        }else {
+        } else {
             return null;
         }
     }
-    //- El sistema debe permiti
+    /**
+     * Find a bill by its number and return the bill object.
+     *
+     * @param number The unique identifier of the bill to find.
+     * @return The bill object or null if the bill is not found.
+     */
+    public Bill findBill(String number) {
+        return handlingService.findBillByNumber(number);
+    }
+    
 }
