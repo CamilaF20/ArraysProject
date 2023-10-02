@@ -192,25 +192,29 @@ public String[] findById(String number) {
         return handlingService.calculateBillTotal(bill.getNumber());
     }
 
-     /**
-     * Get product details from a bill and return them as an array of strings.
-     *
-     * @param bill The bill from which product details will be retrieved.
-     * @return An array of strings containing product details or null if no details are found.
-     */
-     public String[] checkBill(Bill bill) {
-         Product[] products = handlingService.checkBill(bill.getNumber());
-         if (products != null) {
-             String[] productArray = new String[products.length];
-             for (int i = 0; i < products.length; i++) {
-                 productArray[i] = getProductsString(products[i]);
-             }
-             return productArray;
-         } else {
-             return null;
-         }
-     }
-    
+    /**
+ * Get product details from a bill and return them as a two-dimensional array of strings.
+ *
+ * @param bill The bill from which product details will be retrieved.
+ * @return A two-dimensional array of strings containing product details or null if no details are found.
+ */
+public String[][] checkBill(Bill bill) {
+    Product[] products = handlingService.checkBill(bill.getNumber());
+    if (products != null) {
+        String[][] productArray = new String[products.length][6];
+        for (int i = 0; i < products.length; i++) {
+            productArray[i][0] = products[i].getIdProduct();
+            productArray[i][1] = products[i].getDescription();
+            productArray[i][2] = Double.toString(products[i].getValue());
+            productArray[i][3] = Integer.toString(products[i].getStock());
+            productArray[i][4] = products[i].getDateExpired().toString();
+            productArray[i][5] = products[i].getTypeProduct().toString();
+        }
+        return productArray;
+    } else {
+        return null;
+    }
+}
 
     private String getProductsString(Product product) {
         return String.join(",", product.getIdProduct(), product.getDescription(),
@@ -255,12 +259,7 @@ public String[] findById(String number) {
             return null;
         }
     }
-    /**
-     * Find a bill by its number and return the bill object.
-     *
-     * @param number The unique identifier of the bill to find.
-     * @return The bill object or null if the bill is not found.
-     */
+
     public Bill findBill(String number) {
         return handlingService.findBillByNumber(number);
     }

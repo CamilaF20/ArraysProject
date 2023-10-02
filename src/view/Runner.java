@@ -7,7 +7,7 @@ import presenter.Presenter;
 import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
 import java.util.Scanner;
-
+import java.util.ArrayList;
 import java.util.InputMismatchException;
 
    
@@ -439,57 +439,49 @@ import java.util.InputMismatchException;
             return;
         }
     
-        String[] details = presenter.checkBill(bill);
-        if (details != null) {
+        ArrayList<Product> productsInBill = bill.getDetails(); // Obtener detalles de la factura
+    
+        if (!productsInBill.isEmpty()) {
             System.out.println("Bill Number: " + bill.getNumber());
             System.out.println("Date: " + bill.getDateBill());
             System.out.println("Products:");
     
             double totalAmountWithTax = 0.0;
     
-            for (String detail : details) {
-                String[] parts = detail.split(",");
-                if (parts.length == 2) {
-                    String productId = parts[0];
-                    int quantity = Integer.parseInt(parts[1]);
+            for (Product product : productsInBill) {
+                // No necesitas obtener la cantidad del detalle aquí, ya que tienes los productos directamente
+                int quantity = 1; // Cada producto aparece una vez
     
-                    Product product = presenter.findId(productId);
+                double productPrice = product.getValue();
+                double itemTotal = productPrice * quantity;
     
-                    if (product != null) {
-                        double productPrice = product.getValue();
-                        double itemTotal = productPrice * quantity;
+                double ivaRate = switch (product.getTypeProduct()) {
+                    case ASEO -> 0.14;
+                    case MEDICINAS -> 0.04;
+                    case LICORES -> 0.19;
+                    case VIVERES -> 0.08;
+                };
     
-                        double ivaRate = switch (product.getTypeProduct()) {
-                            case ASEO -> 0.14;
-                            case MEDICINAS -> 0.04;
-                            case LICORES -> 0.19;
-                            case VIVERES -> 0.08;
-                        };
+                double itemIva = itemTotal * ivaRate;
     
-                        double itemIva = itemTotal * ivaRate;
+                // Calcular el costo total del artículo con impuestos
+                double itemTotalWithTax = itemTotal + itemIva;
     
-                        // Calculate the total cost of the item with tax
-                        double itemTotalWithTax = itemTotal + itemIva;
+                totalAmountWithTax += itemTotalWithTax;
     
-                        totalAmountWithTax += itemTotalWithTax;
-    
-                        System.out.println("Product: " + product.getDescription());
-                        System.out.println("Quantity: " + quantity);
-                        System.out.println("Total for this product : " + itemTotalWithTax);
-                    } else {
-                        System.out.println("Product with ID " + productId + " not found.");
-                    }
-                }
+                System.out.println("Product: " + product.getDescription());
+                System.out.println("Quantity: " + quantity);
+                System.out.println("Total for this product : " + itemTotalWithTax);
             }
     
-    
-           
             System.out.println("Total Purchase Amount : " + totalAmountWithTax);
         } else {
             System.out.println("No details found for this bill.");
         }
     }
     
+    
+
     
     public void getBill() {
         System.out.println("******* Bill List ******");
