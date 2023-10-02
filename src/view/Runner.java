@@ -378,30 +378,35 @@ import java.util.InputMismatchException;
         runner.getProduct();
         System.out.println("Enter the ID of the product you want to update stock");
         String productId = sc.next();
-
+    
         Product product = presenter.findId(productId);
         if (product == null) {
             System.err.println("The product does not exist.");
             return;
         }
-
+    
         System.out.println("Enter the additional stock quantity (positive to add, negative to subtract)");
         int additionalStock = sc.nextInt();
-
+    
         if (additionalStock == 0) {
             System.err.println("Invalid stock quantity. Stock quantity cannot be zero.");
             return;
         }
-
+    
         int updatedStock = product.getStock() + additionalStock;
-
+    
         if (updatedStock < 5) {
             System.err.println("Warning: The new stock is less than 5. Minimum stock is 5.");
             return;
         }
-
+    
         int stockActual = presenter.updateStock(product, updatedStock);
-        System.out.println("Stock updated successfully. Current stock: " + stockActual);
+    
+        if (stockActual >= 5) {
+            System.out.println("Stock updated successfully. Current stock: " + stockActual);
+        } else {
+            System.err.println("Stock update failed. Current stock is less than 5.");
+        }
     }
     
     public void checkBill() {
@@ -421,7 +426,8 @@ import java.util.InputMismatchException;
             System.out.println("Date: " + bill.getDateBill());
             System.out.println("Products:");
     
-            double totalAmount = 0.0;
+            double totalAmountWithoutTax = 0.0;
+            double totalAmountWithTax = 0.0;
     
             for (String detail : details) {
                 String[] parts = detail.split(",");
@@ -435,10 +441,22 @@ import java.util.InputMismatchException;
                         double productPrice = product.getValue();
                         double itemTotal = productPrice * quantity;
     
-                        // Calculate the total cost of the item with tax based on product type
-                        double itemTotalWithTax = itemTotal + product.calcIva() * quantity;
+                        double ivaRate = switch (product.getTypeProduct()) {
+                            case ASEO -> 0.14;
+                            case MEDICINAS -> 0.04;
+                            case LICORES -> 0.19;
+                            case VIVERES -> 0.08;
+                        };
     
-                        totalAmount += itemTotalWithTax; // Update total amount with tax
+                        double itemIva = itemTotal * ivaRate;
+    
+                        // Calculate the total cost of the item with tax
+                        double itemTotalWithTax = itemTotal + itemIva;
+    
+                        // Update the total amounts
+                        totalAmountWithoutTax += itemTotal;
+                        totalAmountWithTax += itemTotalWithTax;
+    
                         System.out.println("Product: " + product.getDescription());
                         System.out.println("Quantity: " + quantity);
                         System.out.println("Total for this product (including tax): " + itemTotalWithTax);
@@ -448,12 +466,16 @@ import java.util.InputMismatchException;
                 }
             }
     
-            // Calculate and display the total value of all details
-            System.out.println("Total Purchase Amount (including tax): " + totalAmount);
+            // Display the total value of the purchase without tax
+            System.out.println("Total Purchase Amount (excluding tax): " + totalAmountWithoutTax);
+    
+            // Display the total value of the purchase with tax
+            System.out.println("Total Purchase Amount (including tax): " + totalAmountWithTax);
         } else {
             System.out.println("No details found for this bill.");
         }
     }
+    
     
     public void getBill() {
         System.out.println("******* Bill List ******");
