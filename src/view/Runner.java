@@ -400,13 +400,17 @@ import java.util.InputMismatchException;
             return;
         }
     
-        int stockActual = presenter.updateStock(product, updatedStock);
     
-        if (stockActual >= 5) {
-            System.out.println("Stock updated successfully. Current stock: " + stockActual);
+        if (updatedStock >= 5) {
+            System.out.println("Stock updated successfully. Current stock: " + updatedStock);
         } else {
             System.err.println("Stock update failed. Current stock is less than 5.");
         }
+
+        product.setStock(updatedStock);
+
+    
+    System.out.println("Stock updated successfully. Current stock: " + product.getStock());
     }
     
     public void checkBill() {
@@ -426,7 +430,6 @@ import java.util.InputMismatchException;
             System.out.println("Date: " + bill.getDateBill());
             System.out.println("Products:");
     
-            double totalAmountWithoutTax = 0.0;
             double totalAmountWithTax = 0.0;
     
             for (String detail : details) {
