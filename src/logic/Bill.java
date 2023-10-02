@@ -54,4 +54,12 @@ public class Bill {
         }
         return products;
     }
+
+    @Override
+    public String toString() {
+        return "Bill{" +
+                ", number='" + number + '\'' +
+                ", dateBill=" + dateBill +
+                '}';
+    }
 }

@@ -118,10 +118,11 @@ public class Presenter {
         }
     }
     //- El sistema debe permitir agregar facturas al sistema
-    public String addBill(Bill bill) {
-        LocalDate dateBill = bill.getDateBill();
-        handlingService.addBill(bill);
-        return bill.getNumber();
+    public boolean addBill(String[] bill) {
+        String number = bill[0];
+        LocalDate dateBill = LocalDate.parse(bill[1]);
+        Bill bill1 = new Bill(number, dateBill);
+        return handlingService.addBill(bill1);
     }
 
     //- El sistema debe permitir adicionar detalles a una factura
@@ -159,4 +160,23 @@ public class Presenter {
         int stockActual = product.getStock() - newStock;
         return stockActual;
     }
+    public String [][] getBill(){
+
+        if (handlingService.getBills().length > 0){
+
+            String [][] array = new String[handlingService.getBills().length][2];
+
+            for (int j = 0; j < handlingService.getBills().length; j++) {
+
+                array[j][0] = handlingService.getBills()[j].getNumber();
+                array[j][1] = (handlingService.getBills()[j].getDateBill()).toString();
+
+            }
+
+            return array;
+        }else {
+            return null;
+        }
+    }
+    //- El sistema debe permiti
 }

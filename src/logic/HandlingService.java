@@ -9,11 +9,13 @@ public class HandlingService {
     private Product[] products;
     private int position;
     private Bill[] bills;
+    private int positionBill;
 
     public HandlingService() {
         products = new Product[0];
         position = 0;
         bills = new Bill[0];
+        positionBill = 0;
     }
 
     private void ensureProductCapacity() {
@@ -29,7 +31,7 @@ public class HandlingService {
     }
 
     private void ensureBillCapacity() {
-        if (position >= bills.length) {
+        if (positionBill >= bills.length) {
             int newSize;
             if (bills.length == 0) {
                 newSize = 1;
@@ -106,16 +108,20 @@ public class HandlingService {
 
     // Métodos para la gestión de facturas
 
-    public Bill addBill(Bill bill) {
-        ensureBillCapacity();
-        Bill bill1 = new Bill(bill.getNumber(), bill.getDateBill());
-        bills[position] = bill;
-        position++;
-        return bill;
+    public boolean addBill(Bill bill) {
+
+        if (findBillByNumber(bill.getNumber()) != null) {
+            return false;
+        } else {
+            ensureBillCapacity();
+            bills[positionBill] = bill;
+            positionBill++;
+            return true;
+        }
     }
 
     public Bill findBillByNumber(String billNumber) {
-        for (int i = 0; i < position; i++) {
+        for (int i = 0; i < positionBill; i++) {
             if (bills[i].getNumber().equals(billNumber)) {
                 return bills[i];
             }
@@ -155,5 +161,12 @@ public class HandlingService {
             return product;
         }
         return null;
+    }
+    public Bill[] getBills() {
+        Bill[] newArray = new Bill[positionBill];
+        for (int index = 0; index < positionBill; index++) {
+            newArray[index] = bills[index];
+        }
+        return newArray;
     }
 }
