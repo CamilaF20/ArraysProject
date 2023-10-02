@@ -99,16 +99,4 @@ public class Bill {
         return products;
     }
 
-    /**
-     * Convert the invoice to a string representation.
-     *
-     * @return A string representing the invoice.
-     */
-    @Override
-    public String toString() {
-        return "Bill{" +
-                "number='" + number + '\'' +
-                ", dateBill=" + dateBill +
-                '}';
-    }
 }
