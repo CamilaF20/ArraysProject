@@ -453,24 +453,20 @@ import java.util.InputMismatchException;
                         // Calculate the total cost of the item with tax
                         double itemTotalWithTax = itemTotal + itemIva;
     
-                        // Update the total amounts
-                        totalAmountWithoutTax += itemTotal;
                         totalAmountWithTax += itemTotalWithTax;
     
                         System.out.println("Product: " + product.getDescription());
                         System.out.println("Quantity: " + quantity);
-                        System.out.println("Total for this product (including tax): " + itemTotalWithTax);
+                        System.out.println("Total for this product : " + itemTotalWithTax);
                     } else {
                         System.out.println("Product with ID " + productId + " not found.");
                     }
                 }
             }
     
-            // Display the total value of the purchase without tax
-            System.out.println("Total Purchase Amount (excluding tax): " + totalAmountWithoutTax);
     
-            // Display the total value of the purchase with tax
-            System.out.println("Total Purchase Amount (including tax): " + totalAmountWithTax);
+           
+            System.out.println("Total Purchase Amount : " + totalAmountWithTax);
         } else {
             System.out.println("No details found for this bill.");
         }
